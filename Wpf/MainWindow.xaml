@@ -5,16 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525"
+        Title="MainWindow" Height="500" Width="800"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
         TextOptions.TextFormattingMode="Ideal" 
-        TextOptions.TextRenderingMode="Auto"        
+        TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}">
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Initialized="MainWindow_OnInitialized">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="9*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <DataGrid Name="DataGrid" AutoGenerateColumns="False" CanUserResizeColumns="True" CanUserSortColumns="False" RowHeight="35">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}"></DataGridTextColumn>
+                <DataGridTextColumn Header="姓名" Binding="{Binding Name}"></DataGridTextColumn>
+                <DataGridTextColumn Header="身份证" Binding="{Binding IdCard}"></DataGridTextColumn>
+                <DataGridTextColumn Header="手机号" Binding="{Binding Mobile}"></DataGridTextColumn>
+                <DataGridTextColumn Header="归属地" Binding="{Binding Attribution}"></DataGridTextColumn>
+                <DataGridTextColumn Header="市" Binding="{Binding City}"></DataGridTextColumn>
+                <DataGridTextColumn Header="区" Binding="{Binding District}"></DataGridTextColumn>
+                <DataGridTextColumn Header="营业厅" Binding="{Binding BussinessHall}"></DataGridTextColumn>
+                <DataGridTextColumn Header="编号" Binding="{Binding GoodsId}"></DataGridTextColumn>
+                <DataGridTextColumn Header="价格" Binding="{Binding Price}"></DataGridTextColumn>
+                <DataGridTextColumn Header="状态栏" Binding="{Binding Status}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10" Name="StackPanel">
+            <Button Margin="0,2" Click="BtnExport_OnClick" IsEnabled="{Binding Stop}">导入</Button>
+            <Button Margin="0,2" Click="BtnClear_OnClick" IsEnabled="{Binding Stop}">清空</Button>
+            <Button Margin="0,2" Click="BtnBegin_OnClick" IsEnabled="{Binding Stop}">开始</Button>
+            <Button Margin="0,2" Click="BtnStop_OnClick" IsEnabled="{Binding Begin}">停止</Button>
+            <ComboBox Name="ComboBox" Text="{Binding Sleep}" IsEnabled="{Binding Stop}"></ComboBox>
+        </StackPanel>
     </Grid>
 </Window>
+
