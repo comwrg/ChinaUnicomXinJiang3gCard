@@ -6,12 +6,31 @@
 // ----------------------------------------------------------------
 
 using System.ComponentModel;
+using System.Net.Cache;
 using System.Runtime.CompilerServices;
 
 namespace Wpf
 {
-    public class ExportInfo : INotifyPropertyChanged
+    public sealed class ExportInfo : INotifyPropertyChanged
     {
+        public enum StatusCodes
+        {
+            None,
+            IsBuying,
+            NotPrice,
+            FinishBuy,
+            Stop,
+        }
+
+        public int StatusSleep
+        {
+            get { return _statusSleep; }
+            set
+            {
+                _statusSleep = value;
+                OnPropertyChanged(nameof(Status));
+            }
+        }
         private int    _id;
         private string _name;
         private string _idCard;
@@ -21,8 +40,10 @@ namespace Wpf
         private string _bussinessHall;
         private string _attribution;
         private string _price;
-        private string _status;
+        private StatusCodes _statusCode;
         private string _goodsId;
+        private int _statusSleep;
+
         public int Id
         {
             get { return _id; }
@@ -133,16 +154,38 @@ namespace Wpf
         {
             get
             {
-                return _status;
+                if (StatusSleep != 0) return StatusSleep.ToString();
+                switch (StatusCode)
+                {
+                    case StatusCodes.None:
+                        return "等待开始...";
+                    case StatusCodes.IsBuying:
+                        return "正在购买中...";
+                    case StatusCodes.NotPrice:
+                        return "价格不符.";
+                    case StatusCodes.FinishBuy:
+                        return "购买成功.";
+                    case StatusCodes.Stop:
+                        return "停止中.";
+                    default:
+                        return "ERROR";
+                }
+            }
+        }
+
+        public StatusCodes StatusCode
+        {
+            get
+            {
+                return _statusCode;
             }
 
             set
             {
-                _status = value;
+                _statusCode = value;
                 OnPropertyChanged(nameof(Status));
             }
         }
-
         public string GoodsId
         {
             get
@@ -155,12 +198,15 @@ namespace Wpf
                 _goodsId = value;
             }
         }
+        public XinJiang3GCardHttp Http { get; set; } = new XinJiang3GCardHttp();
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
+
