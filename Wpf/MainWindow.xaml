@@ -40,7 +40,7 @@
             <Button Margin="0,2" Click="BtnClear_OnClick" IsEnabled="{Binding Stop}">清空</Button>
             <Button Margin="0,2" Click="BtnBegin_OnClick" IsEnabled="{Binding Stop}">开始</Button>
             <Button Margin="0,2" Click="BtnStop_OnClick" IsEnabled="{Binding Begin}">停止</Button>
-            <ComboBox Name="ComboBox" Text="{Binding Sleep}" IsEnabled="{Binding Stop}"></ComboBox>
+            <ComboBox Name="ComboBox" Text="{Binding MaxDegreeOfParallelism}" IsEnabled="{Binding Stop}"></ComboBox>
         </StackPanel>
     </Grid>
 </Window>
