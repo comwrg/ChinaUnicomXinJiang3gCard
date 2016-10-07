@@ -19,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using Wpf.XinJiang3gCard;
 
 namespace Wpf
 {
@@ -32,18 +33,20 @@ namespace Wpf
             InitializeComponent();
         }
 
-        public ObservableCollection<ExportInfo> ExInfo { get; set; } = new ObservableCollection<ExportInfo>();
-        readonly MainWndControl MainWndControl = new MainWndControl();
+        private ObservableCollection<ExportInfo> ExInfo { get; set; } = new ObservableCollection<ExportInfo>();
+        readonly MainWndControl _mainWndControl = new MainWndControl();
+        private PriceList _priceList = new PriceList();
+
         private void MainWindow_OnInitialized(object sender, EventArgs e)
         {
             DataGrid.ItemsSource = ExInfo;
-            StackPanel.DataContext = MainWndControl;
+            StackPanel.DataContext = _mainWndControl;
             for (int i = 0; i < 20; i++)
             {
                 ComboBox.Items.Add(i + 1);
             }
 
-            
+
         }
 
         private void BtnExport_OnClick(object sender, RoutedEventArgs e)
@@ -54,13 +57,14 @@ namespace Wpf
             if (!string.IsNullOrEmpty(ofd.FileName))
             {
                 string txt = File.ReadAllText(ofd.FileName, Encoding.Default);
-                MatchCollection mc = Regex.Matches(txt, "(.*?)----(.*?)----(.*?)----(.*?)----(.*?)----(.*?)----(.*?)----(.*?)----(.*)");
+                MatchCollection mc = Regex.Matches(txt,
+                    "(.*?)----(.*?)----(.*?)----(.*?)----(.*?)----(.*?)----(.*?)----(.*?)----(.*)");
 
                 foreach (Match m in mc)
                 {
                     ExportInfo ei = new ExportInfo()
                     {
-                        Id = ExInfo.Count+1,
+                        Id = ExInfo.Count + 1,
                         GoodsId = m.Groups[1].Value,
                         Attribution = m.Groups[2].Value,
                         Name = m.Groups[3].Value,
@@ -72,6 +76,7 @@ namespace Wpf
                         Price = m.Groups[9].Value,
                     };
                     ExInfo.Add(ei);
+                    _priceList.Add(ei.GoodsId);
                 }
             }
             //乌鲁木齐----张三----130300199001010001----13933330000----乌鲁木齐市----天山区----乌鲁木齐大巴扎营业厅----价格
@@ -84,40 +89,64 @@ namespace Wpf
 
         private void BtnBegin_OnClick(object sender, RoutedEventArgs e)
         {
-            MainWndControl.Begin = true;
-            
+            _mainWndControl.Begin = true;
+            Func<bool> IsFinish = () =>
+            {
+                foreach (var ei in ExInfo)
+                {
+                    if (ei.StatusCode != ExportInfo.StatusCodes.FinishBuy)
+                        return false;
+                }
+                return false;
+            };
+
             Task.Factory.StartNew(() =>
             {
-                Parallel.ForEach(ExInfo, (info) =>
+                while (!IsFinish())
                 {
-                    XinJiang3gCardHttp http = new XinJiang3gCardHttp();
-                    while (true)
+                    if (_mainWndControl.Stop) break;
+                    _priceList.Refresh();
+                    Parallel.ForEach(ExInfo, new ParallelOptions { MaxDegreeOfParallelism = _mainWndControl.MaxDegreeOfParallelism },(info) =>
                     {
-                        if (MainWndControl.Stop) break;
-                        info.Status = "购买中...";
-                        bool res = http.Order(info);
-                        if (res)
-                        {
-                            info.Status = "成功";
-                            
-                            break;
-                        }
-                        else
-                        {
-                            info.Status = "价格不符";
-                            Thread.Sleep(MainWndControl.Sleep * 1000);
-                        }
-                    }
-                });
+                        if (info.StatusCode == ExportInfo.StatusCodes.FinishBuy) return;
 
-                MainWndControl.Begin = false;
+                        if (_mainWndControl.Stop)
+                        {
+                            info.StatusCode = ExportInfo.StatusCodes.Stop;
+                            return;
+                        }
+                        
+                        info.StatusCode = ExportInfo.StatusCodes.IsBuying;
+                        bool res = false;
+                        if (_priceList[info.GoodsId] <= decimal.Parse(info.Price))
+                        {
+                            res = info.Http.Order(info);
+                        }
+                        
+                        info.StatusCode = res ? ExportInfo.StatusCodes.FinishBuy : ExportInfo.StatusCodes.NotPrice;
+
+                        if (_mainWndControl.Stop)
+                        {
+                            info.StatusCode = ExportInfo.StatusCodes.Stop;
+                        }
+
+                    });
+
+
+                }
             });
         }
 
         
         private void BtnStop_OnClick(object sender, RoutedEventArgs e)
         {
-            MainWndControl.Begin = false;
+            _mainWndControl.Begin = false;
+            return;
+            Thread.Sleep(1000);
+            foreach (var ei in ExInfo)
+            {
+                ei.StatusCode = ExportInfo.StatusCodes.Stop;
+            }
         }
     }
 
@@ -138,7 +167,7 @@ namespace Wpf
         }
 
         public bool Stop { get; private set; } = true;
-        public int Sleep { get; set; } = 5;
+        public int MaxDegreeOfParallelism { get; set; } = 10;
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
