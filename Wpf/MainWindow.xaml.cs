@@ -122,6 +122,10 @@ namespace Wpf
                         {
                             res = info.Http.Order(info);
                         }
+                        else
+                        {
+                            Thread.Sleep(1000);
+                        }
                         
                         info.StatusCode = res ? ExportInfo.StatusCodes.FinishBuy : ExportInfo.StatusCodes.NotPrice;
 
