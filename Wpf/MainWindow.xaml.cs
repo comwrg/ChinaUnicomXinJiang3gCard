@@ -97,7 +97,7 @@ namespace Wpf
                     if (ei.StatusCode != ExportInfo.StatusCodes.FinishBuy)
                         return false;
                 }
-                return false;
+                return true;
             };
 
             Task.Factory.StartNew(() =>
