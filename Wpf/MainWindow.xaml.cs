@@ -33,7 +33,7 @@ namespace Wpf
             InitializeComponent();
         }
 
-        private ObservableCollection<ExportInfo> ExInfo { get; set; } = new ObservableCollection<ExportInfo>();
+        private ObservableCollection<BuyCardInfo> ExInfo { get; set; } = new ObservableCollection<BuyCardInfo>();
         readonly MainWndControl _mainWndControl = new MainWndControl();
         private PriceList _priceList = new PriceList();
 
@@ -62,7 +62,7 @@ namespace Wpf
 
                 foreach (Match m in mc)
                 {
-                    ExportInfo ei = new ExportInfo()
+                    BuyCardInfo ei = new BuyCardInfo()
                     {
                         Id = ExInfo.Count + 1,
                         GoodsId = m.Groups[1].Value,
@@ -94,10 +94,10 @@ namespace Wpf
             {
                 foreach (var ei in ExInfo)
                 {
-                    if (ei.StatusCode != ExportInfo.StatusCodes.FinishBuy)
+                    if (ei.StatusCode != BuyCardInfo.StatusCodes.FinishBuy)
                         return false;
                 }
-                return false;
+                return true;
             };
 
             Task.Factory.StartNew(() =>
@@ -108,30 +108,30 @@ namespace Wpf
                     _priceList.Refresh();
                     Parallel.ForEach(ExInfo, new ParallelOptions { MaxDegreeOfParallelism = _mainWndControl.MaxDegreeOfParallelism },(info) =>
                     {
-                        if (info.StatusCode == ExportInfo.StatusCodes.FinishBuy) return;
+                        if (info.StatusCode == BuyCardInfo.StatusCodes.FinishBuy) return;
 
                         if (_mainWndControl.Stop)
                         {
-                            info.StatusCode = ExportInfo.StatusCodes.Stop;
+                            info.StatusCode = BuyCardInfo.StatusCodes.Stop;
                             return;
                         }
                         
-                        info.StatusCode = ExportInfo.StatusCodes.IsBuying;
+                        info.StatusCode = BuyCardInfo.StatusCodes.IsBuying;
                         bool res = false;
                         if (_priceList[info.GoodsId] <= decimal.Parse(info.Price))
                         {
-                            res = info.Http.Order(info);
+                            res = info.Http.BuyNetworkCard(info);
                         }
                         else
                         {
                             Thread.Sleep(1000);
                         }
                         
-                        info.StatusCode = res ? ExportInfo.StatusCodes.FinishBuy : ExportInfo.StatusCodes.NotPrice;
+                        info.StatusCode = res ? BuyCardInfo.StatusCodes.FinishBuy : BuyCardInfo.StatusCodes.NotPrice;
 
                         if (_mainWndControl.Stop)
                         {
-                            info.StatusCode = ExportInfo.StatusCodes.Stop;
+                            info.StatusCode = BuyCardInfo.StatusCodes.Stop;
                         }
 
                     });
@@ -149,7 +149,7 @@ namespace Wpf
             Thread.Sleep(1000);
             foreach (var ei in ExInfo)
             {
-                ei.StatusCode = ExportInfo.StatusCodes.Stop;
+                ei.StatusCode = BuyCardInfo.StatusCodes.Stop;
             }
         }
     }

@@ -27,7 +27,7 @@ namespace Wpf.XinJiang3gCard
             {
                 string mToken, hName, hValue;
                 decimal price;
-                http.PromptlyOrder(goodsId, "乌鲁木齐", out mToken, out hName, out hValue, out price);
+                http.PromptlyBuyNetworkCard(goodsId, "乌鲁木齐", out mToken, out hName, out hValue, out price);
                 _goodsIdDictionary[goodsId] = price;
             }
         }
