@@ -85,6 +85,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="XinJiang3gCard\XinJiang3GCardHttpMobile.cs" />
+    <Compile Include="XinJiang3gCard\XinJiang3GHttpBase.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -93,7 +95,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExportInfo.cs" />
+    <Compile Include="BuyCardInfo.cs" />
     <Compile Include="XinJiang3gCard\PriceList.cs" />
     <Compile Include="XinJiang3gCard\XinJiang3gCardHttpRes.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 
 namespace Wpf
 {
-    public sealed class ExportInfo : INotifyPropertyChanged
+    public sealed class BuyCardInfo : INotifyPropertyChanged
     {
         public enum StatusCodes
         {
