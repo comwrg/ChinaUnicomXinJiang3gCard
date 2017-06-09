@@ -47,7 +47,7 @@
                     </StackPanel>
                 </Grid>
             </TabItem>
-            <TabItem Header="Mobile">
+            <TabItem Header="Mobile" Visibility="Hidden">
                 <DataGrid  AutoGenerateColumns="False" CanUserResizeColumns="True" CanUserSortColumns="False" RowHeight="35">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding Id}"></DataGridTextColumn>

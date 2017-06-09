@@ -53,7 +53,10 @@ namespace Wpf
 
             var res = Req.GetResponse(item);
             Console.WriteLine(res.Location);
-            return true;
+            // res.Location 
+            // http://www.10010.com/mall-web/OrderSuccess/showOrderInfo?enPara=uSod4mavQfRxixgGzPzHTUbQQT6oNGFiH%2BdfpjaxQx8%3D
+
+            return res.Location.Contains("OrderSuccess");
         }
 
         public void PromptlyBuyNetworkCard(string goodsId, string attribution, out string mToken, out string hName,
