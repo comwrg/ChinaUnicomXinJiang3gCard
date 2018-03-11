@@ -23,7 +23,7 @@ namespace Wpf.XinJiang3gCard
                 Regex.Match(XinJiang3gCardHttpRes.Attribution, $"(\\d{{3}}){attribution}").Groups[1].Value;
             var item = new RequestItem
                        {
-                           Url = "http://www.10010.com/mall-web/OrderInputAjaxNew/hasReceivePay",
+                           Url = "http://mall.10010.com/mall-web/OrderInputAjaxNew/hasReceivePay",
                            Method = Method.POST,
                            PostData = $"AddrCityCode={articleCity}&NumberCityCode={articleCity}&goodsId={goodsId}"
                        };
@@ -40,7 +40,7 @@ namespace Wpf.XinJiang3gCard
             {
                 Req.GetResponse(new RequestItem
                                        {
-                                           Url = "http://www.10010.com/mall-web/NoLogin/init?goodsId=" + goodsId
+                                           Url = "http://mall.10010.com/mall-web/NoLogin/init?goodsId=" + goodsId
                                        });
                 Console.WriteLine(Req.CookieString);
             }
@@ -85,7 +85,7 @@ namespace Wpf.XinJiang3gCard
         {
             var item = new RequestItem
                        {
-                           Url = "http://www.10010.com/mall-web/OrderInputAjaxNew/toGetSelfFetchInfoList",
+                           Url = "http://mall.10010.com/mall-web/OrderInputAjaxNew/toGetSelfFetchInfoList",
                            Method = Method.POST,
                            PostData =
                                $"merchantProvice=89&cityCode={essCityCode}&countyCode={districtCode}&goodsId=891606209102"

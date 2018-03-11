@@ -45,7 +45,7 @@ namespace Wpf
 
             var item = new RequestItem
                        {
-                           Url = "http://www.10010.com/mall-web/OrderSubmit/submitOrder",
+                           Url = "http://mall.10010.com/mall-web/OrderSubmit/submitOrder",
                            Method = Method.POST,
                            PostData =
                                $"paramStr={paramStr}&inventoryType={inventoryType}&uploadTokenUuid=&_m_token={mToken}&{Uri.EscapeDataString(hName)}={Uri.EscapeDataString(hValue)}"
@@ -54,7 +54,7 @@ namespace Wpf
             var res = Req.GetResponse(item);
             Console.WriteLine(res.Location);
             // res.Location 
-            // http://www.10010.com/mall-web/OrderSuccess/showOrderInfo?enPara=uSod4mavQfRxixgGzPzHTUbQQT6oNGFiH%2BdfpjaxQx8%3D
+            // http://mall.10010.com/mall-web/OrderSuccess/showOrderInfo?enPara=uSod4mavQfRxixgGzPzHTUbQQT6oNGFiH%2BdfpjaxQx8%3D
 
             return res.Location.Contains("OrderSuccess");
         }
@@ -70,7 +70,7 @@ namespace Wpf
 //            sw.Start();
             var item = new RequestItem
                        {
-                           Url = "http://www.10010.com/mall-web/GoodsDetail/promptlyBuyNetworkCard",
+                           Url = "http://mall.10010.com/mall-web/GoodsDetail/promptlyBuyNetworkCard",
                            Method = Method.POST,
                            PostData =
                                $"goodsId={goodsId}&tmplId=10000011&merchantId=8900000&provinceCode=89&cityCode=&diffPlace=0&localFee=0&remoteFee=0&isOnlinepay=1&isReceivepay=0&inventoryType=1&articleProvince=89&articleCity={articleCity}&manageType=3&articleSymbol=2372&productId=99005969&productPackDesc=%E5%90%AB%E9%A2%84%E5%AD%98%E6%AC%BE200%E5%85%83%E3%80%82%0D%0A%E8%B5%84%E8%B4%B9%E6%A0%87%E5%87%86%EF%BC%9A200%E5%85%83%E5%8C%8515GB%E7%9C%81%E5%86%85%E6%B5%81%E9%87%8F%EF%BC%8C%E6%9C%89%E6%95%88%E6%9C%9F%E4%B8%BA90%E5%A4%A9%EF%BC%8C%E6%9C%89%E6%95%88%E6%9C%9F%E4%B8%BA%E4%BA%A7%E5%93%81%E6%BF%80%E6%B4%BB%E6%97%A5%E8%B5%B7%E8%AE%A1%E7%AE%97%E7%9A%84%E7%B4%AF%E8%AE%A1%E5%A4%A9%E6%95%B0%E3%80%82&packageType=2372&brandCode=&modelCode=&colorCode="
